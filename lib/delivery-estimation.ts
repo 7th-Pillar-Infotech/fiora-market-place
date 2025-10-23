@@ -184,7 +184,7 @@ function calculatePreparationTime(
   }
 
   // Current order volume impact
-  let volumeMultiplier = DELIVERY_CONFIG.VOLUME_IMPACT.LOW;
+  let volumeMultiplier: number = DELIVERY_CONFIG.VOLUME_IMPACT.LOW;
   if (currentOrderVolume > 15) {
     volumeMultiplier = DELIVERY_CONFIG.VOLUME_IMPACT.HIGH;
     factors.push("High order volume may cause delays");

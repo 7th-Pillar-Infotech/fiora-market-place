@@ -2,7 +2,16 @@
  * Utility functions for the Fiora Customer Dashboard
  */
 
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { CartItem, Customer, Order, Product, Shop } from "./types";
+
+/**
+ * Combine CSS classes with Tailwind CSS class merging
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 /**
  * localStorage utility functions with error handling

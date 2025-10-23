@@ -19,7 +19,7 @@ export interface JourneyStep {
 export interface ValidationResult {
   success: boolean;
   message: string;
-  details?: any;
+  details?: unknown;
   errors?: string[];
 }
 
@@ -336,6 +336,7 @@ export const completeShoppingJourney: UserJourney = {
               coordinates: { lat: 50.4501, lng: 30.5234 },
             },
             estimatedDeliveryTime: new Date(Date.now() + 60 * 60 * 1000), // 1 hour from now
+            paymentMethod: "card",
             createdAt: new Date(),
             updatedAt: new Date(),
           };
