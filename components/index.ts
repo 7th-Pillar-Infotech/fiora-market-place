@@ -3,3 +3,6 @@ export * from "./ui";
 
 // Layout Components
 export * from "./layout";
+
+// Recommendation Components
+export * from "./recommendations";

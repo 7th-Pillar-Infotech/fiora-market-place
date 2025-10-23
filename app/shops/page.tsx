@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Shop, ShopFilters } from "@/lib/types";
 import {
   mockShops,
+  mockProducts,
   sortShops,
   filterShops,
   searchShops,
@@ -12,7 +13,16 @@ import { ShopGrid } from "@/components/shop/shop-grid";
 import { ShopSort } from "@/components/shop/shop-sort";
 import { ShopSearch } from "@/components/shop/shop-search";
 import { ShopFilters as ShopFiltersComponent } from "@/components/shop/shop-filters";
+import {
+  RecommendationsSection,
+  BrowsingHistoryStats,
+} from "@/components/recommendations";
+import {
+  useRecommendations,
+  useBrowsingHistory,
+} from "@/hooks/use-recommendations";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { cartUtils } from "@/lib/utils";
 
 export default function ShopsPage() {
   const [allShops] = useState<Shop[]>(mockShops);
@@ -23,6 +33,24 @@ export default function ShopsPage() {
 
   // Debounce search query to avoid excessive filtering
   const debouncedSearchQuery = useDebouncedValue(searchQuery, 300);
+
+  // Recommendations hook
+  const {
+    recommendations,
+    loading: recommendationsLoading,
+    error: recommendationsError,
+    refreshRecommendations,
+    trackProductView,
+    browsingStats,
+  } = useRecommendations({
+    products: mockProducts,
+    shops: mockShops,
+    limit: 8,
+    autoRefresh: false,
+  });
+
+  // Browsing history hook
+  const { clearHistory } = useBrowsingHistory();
 
   // Compute filtered and sorted shops
   const processedShops = useMemo(() => {
@@ -63,6 +91,25 @@ export default function ShopsPage() {
     setFilters(newFilters);
   };
 
+  const handleAddToCart = (product: any) => {
+    cartUtils.addToCart(product, 1);
+    // You could add a toast notification here
+    console.log("Added to cart:", product.name);
+  };
+
+  const handleProductView = (
+    productId: string,
+    shopId: string,
+    category: string
+  ) => {
+    trackProductView(productId, shopId, category);
+  };
+
+  const handleClearHistory = () => {
+    clearHistory();
+    refreshRecommendations();
+  };
+
   return (
     <div className="min-h-screen bg-neutral-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -74,6 +121,32 @@ export default function ShopsPage() {
           <p className="text-neutral-600">
             Discover beautiful flowers from local shops near you
           </p>
+        </div>
+
+        {/* Recommendations Section */}
+        <div className="mb-8 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="lg:col-span-3">
+              <RecommendationsSection
+                recommendations={recommendations}
+                loading={recommendationsLoading}
+                error={recommendationsError}
+                onAddToCart={handleAddToCart}
+                onProductView={handleProductView}
+                onRefresh={refreshRecommendations}
+                compact={true}
+                maxItems={6}
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <BrowsingHistoryStats
+                stats={browsingStats}
+                shops={mockShops}
+                onClearHistory={handleClearHistory}
+                compact={true}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Search and Filters */}

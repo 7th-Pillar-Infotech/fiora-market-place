@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
-import { useDebounce } from "@/hooks/use-debounced-value";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 
 interface ProductSearchProps {
   value: string;
@@ -18,7 +18,7 @@ export function ProductSearch({
   placeholder = "Search products...",
 }: ProductSearchProps) {
   const [localValue, setLocalValue] = useState(value);
-  const debouncedValue = useDebounce(localValue, 300);
+  const debouncedValue = useDebouncedValue(localValue, 300);
 
   useEffect(() => {
     onChange(debouncedValue);

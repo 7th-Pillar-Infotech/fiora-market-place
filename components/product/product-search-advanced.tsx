@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, X, Clock, TrendingUp } from "lucide-react";
-import { useDebounce } from "@/hooks/use-debounced-value";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 
 interface ProductSearchAdvancedProps {
   value: string;
@@ -28,7 +28,7 @@ export function ProductSearchAdvanced({
   const [isOpen, setIsOpen] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const debouncedValue = useDebounce(localValue, 300);
+  const debouncedValue = useDebouncedValue(localValue, 300);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 

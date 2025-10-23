@@ -11,6 +11,8 @@ import { ProductQuantitySelector } from "@/components/product/product-quantity-s
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ShoppingCart, Heart } from "lucide-react";
+import { useProductViewTracking } from "@/hooks/use-recommendations";
+import { cartUtils } from "@/lib/utils";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -19,6 +21,9 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+  // View tracking hook
+  const { startTracking, endTracking } = useProductViewTracking();
 
   useEffect(() => {
     const loadData = async () => {
@@ -35,12 +40,26 @@ export default function ProductDetailPage() {
       setProduct(foundProduct || null);
       setShop(foundShop || null);
       setLoading(false);
+
+      // Start tracking view when product is loaded
+      if (foundProduct) {
+        startTracking();
+      }
     };
 
     if (params.productId) {
       loadData();
     }
-  }, [params.productId]);
+  }, [params.productId, startTracking]);
+
+  // Track view duration when component unmounts or product changes
+  useEffect(() => {
+    return () => {
+      if (product) {
+        endTracking(product.id, product.shopId, product.category);
+      }
+    };
+  }, [product, endTracking]);
 
   const handleAddToCart = async () => {
     if (!product || !product.isAvailable) return;
@@ -50,8 +69,9 @@ export default function ProductDetailPage() {
     // Simulate adding to cart
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    // TODO: Implement actual cart functionality in later tasks
-    console.log(`Adding ${quantity}x ${product.name} to cart`);
+    // Add to cart using utility
+    cartUtils.addToCart(product, quantity);
+    console.log(`Added ${quantity}x ${product.name} to cart`);
     alert(`Added ${quantity}x "${product.name}" to cart!`);
 
     setIsAddingToCart(false);
