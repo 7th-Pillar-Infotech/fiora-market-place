@@ -71,7 +71,7 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1">
             {items.length === 0 ? (
               /* Empty State */
               <div className="flex flex-col items-center justify-center h-full p-8 text-center">

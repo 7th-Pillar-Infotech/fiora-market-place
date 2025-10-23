@@ -24,7 +24,6 @@ export function Header({ className }: HeaderProps) {
     { name: "Home", href: "/" },
     { name: "Shops", href: "/shops" },
     { name: "Orders", href: "/orders" },
-    { name: "Test Flows", href: "/test-flows" },
   ];
 
   const isActive = (href: string) => {
@@ -87,9 +86,9 @@ export function Header({ className }: HeaderProps) {
               <ShoppingCart className="h-5 w-5" />
               {state.totalItems > 0 && (
                 <Badge
-                  variant="destructive"
-                  size="sm"
-                  className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                  variant="default"
+                  size="default"
+                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs"
                 >
                   {state.totalItems > 99 ? "99+" : state.totalItems}
                 </Badge>

@@ -7,17 +7,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700 active:scale-95",
-        destructive:
-          "bg-error-500 text-white hover:bg-error-600 active:bg-error-700 active:scale-95",
+        default: "text-white active:scale-95 fiora-btn-primary",
+        destructive: "text-white active:scale-95 fiora-btn-destructive",
         outline:
           "border border-neutral-300 bg-white hover:bg-neutral-50 active:bg-neutral-100 active:scale-95 text-neutral-900",
-        secondary:
-          "bg-secondary-500 text-white hover:bg-secondary-600 active:bg-secondary-700 active:scale-95",
+        secondary: "text-white active:scale-95 fiora-btn-secondary",
         ghost:
           "hover:bg-neutral-100 active:bg-neutral-200 active:scale-95 text-neutral-900",
-        link: "text-primary-500 underline-offset-4 hover:underline active:scale-95",
+        link: "underline-offset-4 hover:underline active:scale-95 fiora-btn-link",
       },
       size: {
         default: "h-10 px-4 py-2 min-h-[44px] min-w-[44px]",

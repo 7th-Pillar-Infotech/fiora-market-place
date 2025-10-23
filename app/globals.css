@@ -69,6 +69,55 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
+
+  /* Primary color scale */
+  --color-primary-50: #fdf2f8;
+  --color-primary-100: #fce7f3;
+  --color-primary-200: #fbcfe8;
+  --color-primary-300: #f9a8d4;
+  --color-primary-400: #f472b6;
+  --color-primary-500: #ec4899;
+  --color-primary-600: #db2777;
+  --color-primary-700: #be185d;
+  --color-primary-800: #9d174d;
+  --color-primary-900: #831843;
+
+  /* Secondary color scale */
+  --color-secondary-50: #f0fdf4;
+  --color-secondary-100: #dcfce7;
+  --color-secondary-200: #bbf7d0;
+  --color-secondary-300: #86efac;
+  --color-secondary-400: #4ade80;
+  --color-secondary-500: #22c55e;
+  --color-secondary-600: #16a34a;
+  --color-secondary-700: #15803d;
+  --color-secondary-800: #166534;
+  --color-secondary-900: #14532d;
+
+  /* Neutral color scale */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+
+  /* Red color scale */
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-red-900: #7f1d1d;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -243,4 +292,60 @@ body {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: optimize-contrast;
   }
+}
+
+/* Custom Button Styles */
+.fiora-btn-primary {
+  background-color: #ec4899;
+  background-color: var(--color-primary-500, #ec4899);
+}
+
+.fiora-btn-primary:hover {
+  background-color: #db2777;
+  background-color: var(--color-primary-600, #db2777);
+}
+
+.fiora-btn-primary:active {
+  background-color: #be185d;
+  background-color: var(--color-primary-700, #be185d);
+}
+
+.fiora-btn-secondary {
+  background-color: #22c55e;
+  background-color: var(--color-secondary-500, #22c55e);
+}
+
+.fiora-btn-secondary:hover {
+  background-color: #16a34a;
+  background-color: var(--color-secondary-600, #16a34a);
+}
+
+.fiora-btn-secondary:active {
+  background-color: #15803d;
+  background-color: var(--color-secondary-700, #15803d);
+}
+
+.fiora-btn-destructive {
+  background-color: #ef4444;
+  background-color: var(--color-red-500, #ef4444);
+}
+
+.fiora-btn-destructive:hover {
+  background-color: #dc2626;
+  background-color: var(--color-red-600, #dc2626);
+}
+
+.fiora-btn-destructive:active {
+  background-color: #b91c1c;
+  background-color: var(--color-red-700, #b91c1c);
+}
+
+.fiora-btn-link {
+  color: #ec4899;
+  color: var(--color-primary-500, #ec4899);
+}
+
+.fiora-btn-link:hover {
+  color: #db2777;
+  color: var(--color-primary-600, #db2777);
 }
