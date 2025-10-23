@@ -1,0 +1,7 @@
+[build]
+  command = "next build"
+  publish = ".next"
+  edge_functions = "netlify/edge-functions"
+
+[plugins]
+  - package = "@netlify/next"
