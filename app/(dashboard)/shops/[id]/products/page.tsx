@@ -3,45 +3,67 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Shop, Product, ProductFilters } from "@/lib/types";
-import {
-  mockShops,
-  mockProducts,
-  filterProducts,
-  sortProducts,
-  searchProducts,
-} from "@/lib/mock-data";
+import { Product, Shop } from "@/lib/types";
+import { mockShops, mockProducts } from "@/lib/mock-data";
 import { ProductGrid } from "@/components/product/product-grid";
-import { ProductFiltersAdvanced as ProductFiltersComponent } from "@/components/product/product-filters-advanced";
-import { ProductSearchAdvanced as ProductSearch } from "@/components/product/product-search-advanced";
 import { ProductSort } from "@/components/product/product-sort";
+import { ProductSearch } from "@/components/product/product-search";
+// Simple category filter component
+const CategoryFilter = ({
+  categories,
+  selectedCategory,
+  onCategoryChange,
+}: {
+  categories: string[];
+  selectedCategory: string;
+  onCategoryChange: (category: string) => void;
+}) => {
+  return (
+    <div className="flex items-center gap-2">
+      <select
+        value={selectedCategory}
+        onChange={(e) => onCategoryChange(e.target.value)}
+        className="px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+      >
+        <option value="">All Categories</option>
+        {categories.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Package } from "lucide-react";
+import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/cart-context";
 
 export default function ShopProductsPage() {
   const params = useParams();
-
   const [shop, setShop] = useState<Shop | null>(null);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState("name");
   const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState<ProductFilters>({});
-  const [sortBy, setSortBy] = useState("relevance");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const { addItem } = useCart();
 
-  // Load shop and products
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
 
+      console.log("Products page loading data for shop:", params.id);
+
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       const foundShop = mockShops.find((s) => s.id === params.id);
       const shopProducts = mockProducts.filter((p) => p.shopId === params.id);
+
+      console.log("Found shop:", foundShop?.name);
+      console.log("Found products:", shopProducts.length);
 
       setShop(foundShop || null);
       setAllProducts(shopProducts);
@@ -53,40 +75,58 @@ export default function ShopProductsPage() {
     }
   }, [params.id]);
 
-  // Process products with search, filters, and sorting
+  // Filter and sort products
   const processedProducts = useMemo(() => {
-    let products = [...allProducts];
+    let result = allProducts;
 
-    // Apply search
+    // Apply search filter
     if (searchQuery.trim()) {
-      products = searchProducts(products, searchQuery);
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (product) =>
+          product.name.toLowerCase().includes(query) ||
+          product.description.toLowerCase().includes(query)
+      );
     }
 
-    // Apply filters
-    products = filterProducts(products, filters);
+    // Apply category filter
+    if (selectedCategory) {
+      result = result.filter(
+        (product) => product.category === selectedCategory
+      );
+    }
 
     // Apply sorting
-    products = sortProducts(products, sortBy);
+    switch (sortBy) {
+      case "price_asc":
+        result = result.sort((a, b) => a.price - b.price);
+        break;
+      case "price_desc":
+        result = result.sort((a, b) => b.price - a.price);
+        break;
+      case "delivery_time":
+        result = result.sort(
+          (a, b) => a.estimatedDeliveryTime - b.estimatedDeliveryTime
+        );
+        break;
+      case "availability":
+        result = result.sort(
+          (a, b) => (b.isAvailable ? 1 : 0) - (a.isAvailable ? 1 : 0)
+        );
+        break;
+      case "name":
+      default:
+        result = result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+    }
 
-    return products;
-  }, [allProducts, searchQuery, filters, sortBy]);
+    return result;
+  }, [allProducts, searchQuery, selectedCategory, sortBy]);
 
-  // Get available filter options
-  const filterOptions = useMemo(() => {
-    const categories = [...new Set(allProducts.map((p) => p.category))];
-    const tags = [...new Set(allProducts.flatMap((p) => p.tags))];
-    const prices = allProducts.map((p) => p.price);
-    const deliveryTimes = allProducts.map((p) => p.estimatedDeliveryTime);
-    const priceRange = {
-      min: Math.min(...prices),
-      max: Math.max(...prices),
-    };
-    const deliveryTimeRange = {
-      min: Math.min(...deliveryTimes),
-      max: Math.max(...deliveryTimes),
-    };
-
-    return { categories, tags, priceRange, deliveryTimeRange };
+  // Get unique categories from products
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(allProducts.map((p) => p.category)));
+    return cats.sort();
   }, [allProducts]);
 
   const handleAddToCart = (product: Product) => {
@@ -104,25 +144,19 @@ export default function ShopProductsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Loading skeleton */}
           <div className="animate-pulse">
-            <div className="h-8 bg-neutral-200 rounded w-32 mb-8"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              <div className="lg:col-span-1">
-                <div className="h-96 bg-neutral-200 rounded-xl"></div>
-              </div>
-              <div className="lg:col-span-3 space-y-6">
-                <div className="flex gap-4">
-                  <div className="flex-1 h-10 bg-neutral-200 rounded"></div>
-                  <div className="h-10 bg-neutral-200 rounded w-32"></div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="space-y-3">
-                      <div className="aspect-square bg-neutral-200 rounded"></div>
+            <div className="h-8 bg-neutral-200 rounded w-48 mb-8"></div>
+            <div className="space-y-6">
+              <div className="h-12 bg-neutral-200 rounded"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="space-y-3">
+                    <div className="aspect-square bg-neutral-200 rounded-lg"></div>
+                    <div className="space-y-2">
                       <div className="h-4 bg-neutral-200 rounded w-3/4"></div>
-                      <div className="h-6 bg-neutral-200 rounded w-1/2"></div>
+                      <div className="h-4 bg-neutral-200 rounded w-1/2"></div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -144,7 +178,7 @@ export default function ShopProductsPage() {
 
           <div className="text-center py-12">
             <div className="mx-auto w-24 h-24 bg-neutral-100 rounded-full flex items-center justify-center mb-4">
-              <Package className="w-12 h-12 text-neutral-400" />
+              <ShoppingBag className="w-12 h-12 text-neutral-400" />
             </div>
             <h1 className="text-2xl font-bold text-neutral-900 mb-2">
               Shop not found
@@ -173,109 +207,84 @@ export default function ShopProductsPage() {
           </Button>
         </Link>
 
-        {/* Page Header */}
+        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-neutral-900 mb-2">
-            {shop.name} Products
+          <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">
+            {shop.name} - Products
           </h1>
-          <p className="text-neutral-600">
-            Browse our collection of fresh flowers and arrangements
+          <p className="text-sm md:text-base text-neutral-600">
+            Browse beautiful flowers and arrangements from {shop.name}
           </p>
         </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar - Filters */}
-          <div className="lg:col-span-1">
-            <ProductFiltersComponent
-              filters={filters}
-              onFiltersChange={setFilters}
-              availableCategories={filterOptions.categories}
-              availableTags={filterOptions.tags}
-              priceRange={filterOptions.priceRange}
-              deliveryTimeRange={filterOptions.deliveryTimeRange}
-            />
-          </div>
-
-          {/* Main Content Area */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Search and Sort Controls */}
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1">
-                    <ProductSearch
-                      value={searchQuery}
-                      onChange={setSearchQuery}
-                      products={allProducts}
-                      placeholder={`Search products in ${shop.name}...`}
-                    />
-                  </div>
-                  <div className="flex-shrink-0">
-                    <ProductSort sortBy={sortBy} onSortChange={setSortBy} />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Results Summary */}
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-neutral-600">
-                {processedProducts.length} of {allProducts.length} products
-                {searchQuery && (
-                  <span> matching &quot;{searchQuery}&quot;</span>
-                )}
-              </div>
-              {(searchQuery || Object.keys(filters).length > 0) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setFilters({});
-                    setSortBy("relevance");
-                  }}
-                >
-                  Clear all
-                </Button>
-              )}
+        {/* Search and Filters */}
+        <div className="mb-6 space-y-4">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+            <div className="flex-1">
+              <ProductSearch
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Search products..."
+              />
             </div>
-
-            {/* Products Grid */}
-            <ProductGrid
-              products={processedProducts}
-              onAddToCart={handleAddToCart}
-              loading={false}
-            />
-
-            {/* Empty State for No Results */}
-            {!loading &&
-              processedProducts.length === 0 &&
-              allProducts.length > 0 && (
-                <div className="text-center py-12">
-                  <div className="mx-auto w-24 h-24 bg-neutral-100 rounded-full flex items-center justify-center mb-4">
-                    <Package className="w-12 h-12 text-neutral-400" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-neutral-900 mb-2">
-                    No products match your criteria
-                  </h3>
-                  <p className="text-neutral-600 mb-6">
-                    Try adjusting your search terms or filters to find what
-                    you&apos;re looking for.
-                  </p>
-                  <Button
-                    onClick={() => {
-                      setSearchQuery("");
-                      setFilters({});
-                      setSortBy("relevance");
-                    }}
-                  >
-                    Clear filters
-                  </Button>
-                </div>
-              )}
+            <div className="flex items-center gap-3">
+              <CategoryFilter
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+              />
+              <ProductSort sortBy={sortBy} onSortChange={setSortBy} />
+            </div>
           </div>
         </div>
+
+        {/* Results Summary */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="text-sm text-neutral-600">
+            {processedProducts.length} product
+            {processedProducts.length !== 1 ? "s" : ""} found
+            {(searchQuery || selectedCategory) && (
+              <span className="ml-1">
+                {searchQuery && ` for "${searchQuery}"`}
+                {selectedCategory && ` in ${selectedCategory}`}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Products Grid */}
+        {processedProducts.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="mx-auto w-24 h-24 bg-neutral-100 rounded-full flex items-center justify-center mb-4">
+              <ShoppingBag className="w-12 h-12 text-neutral-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-neutral-900 mb-2">
+              No products found
+            </h3>
+            <p className="text-neutral-600 mb-6">
+              {searchQuery || selectedCategory
+                ? "Try adjusting your search or filters"
+                : "This shop doesn't have any products available right now"}
+            </p>
+            {(searchQuery || selectedCategory) && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedCategory("");
+                }}
+              >
+                Clear Filters
+              </Button>
+            )}
+          </div>
+        ) : (
+          <ProductGrid
+            products={processedProducts}
+            loading={loading}
+            onAddToCart={handleAddToCart}
+          />
+        )}
       </div>
     </div>
   );

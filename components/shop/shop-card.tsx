@@ -80,7 +80,7 @@ export function ShopCard({ shop }: ShopCardProps) {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1 mb-3">
               {shop.categories.slice(0, 2).map((category) => (
                 <Badge
                   key={category}
@@ -96,6 +96,17 @@ export function ShopCard({ shop }: ShopCardProps) {
                   +{shop.categories.length - 2}
                 </Badge>
               )}
+            </div>
+
+            {/* Quick Products Link */}
+            <div className="pt-2 border-t border-neutral-100">
+              <Link
+                href={`/shops/${shop.id}/products`}
+                className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                onClick={(e) => e.stopPropagation()}
+              >
+                View Products →
+              </Link>
             </div>
           </div>
         </CardContent>

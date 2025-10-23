@@ -8,9 +8,10 @@ import { Star, Clock, MapPin, Phone, ShoppingBag } from "lucide-react";
 
 interface ShopInfoProps {
   shop: Shop;
+  handleViewProducts: () => void;
 }
 
-export function ShopInfo({ shop }: ShopInfoProps) {
+export function ShopInfo({ shop, handleViewProducts }: ShopInfoProps) {
   const formatDeliveryTime = (minutes: number) => {
     if (minutes < 60) {
       return `${minutes}min`;
@@ -104,7 +105,12 @@ export function ShopInfo({ shop }: ShopInfoProps) {
 
       {/* Action Button */}
       <div className="pt-4">
-        <Button size="lg" className="w-full sm:w-auto flex items-center gap-2">
+        <Button
+          onClick={handleViewProducts}
+          size="lg"
+          variant="outline"
+          className="w-full sm:w-auto flex items-center gap-2"
+        >
           <ShoppingBag className="h-4 w-4" />
           View Products
         </Button>

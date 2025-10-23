@@ -37,6 +37,10 @@ export default function ShopDetailPage() {
   }, [params.id]);
 
   const handleViewProducts = () => {
+    console.log("View Products clicked!", {
+      shopId: params.id,
+      targetUrl: `/shops/${params.id}/products`,
+    });
     router.push(`/shops/${params.id}/products`);
   };
 
@@ -126,19 +130,7 @@ export default function ShopDetailPage() {
             </div>
 
             {/* Shop Information */}
-            <ShopInfo shop={shop} />
-
-            {/* View Products Button - Mobile */}
-            <div className="lg:hidden">
-              <Button
-                size="lg"
-                className="w-full flex items-center gap-2"
-                onClick={handleViewProducts}
-              >
-                <ShoppingBag className="h-4 w-4" />
-                View Products
-              </Button>
-            </div>
+            <ShopInfo shop={shop} handleViewProducts={handleViewProducts} />
           </div>
 
           {/* Right Column - Sidebar */}
