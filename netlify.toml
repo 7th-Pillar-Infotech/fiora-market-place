@@ -3,5 +3,5 @@
   publish = ".next"
   edge_functions = "netlify/edge-functions"
 
-[plugins]
-  - package = "@netlify/next"
+[[plugins]]
+  package = "@netlify/next"
