@@ -311,7 +311,7 @@ export function UserJourneyTest() {
                             {result.result.message}
                           </div>
 
-                          {result.result.details && (
+                          {result.result.details ? (
                             <details className="text-xs">
                               <summary className="cursor-pointer text-neutral-500">
                                 View details
@@ -320,7 +320,7 @@ export function UserJourneyTest() {
                                 {JSON.stringify(result.result.details, null, 2)}
                               </pre>
                             </details>
-                          )}
+                          ) : null}
 
                           {result.result.errors &&
                             result.result.errors.length > 0 && (
