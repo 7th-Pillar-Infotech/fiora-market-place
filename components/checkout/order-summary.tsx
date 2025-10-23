@@ -3,8 +3,11 @@
 import React from "react";
 import { CartItem, Address } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency, formatDeliveryTime } from "@/lib/utils";
-import { ShoppingBag, Clock, MapPin, Truck } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+import { useCartDeliveryEstimate } from "@/hooks/use-delivery-estimation";
+import { DeliveryTime } from "@/components/ui/delivery-time";
+import { ShoppingBag, MapPin, Truck } from "lucide-react";
+import { mockShops } from "@/lib/mock-data";
 
 interface OrderSummaryProps {
   items: CartItem[];
@@ -22,6 +25,13 @@ export function OrderSummary({
   const deliveryFee = 0; // Free delivery for now
   const finalTotal = totalAmount + deliveryFee;
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Get enhanced delivery estimate
+  const { estimate, isLoading } = useCartDeliveryEstimate(
+    items,
+    mockShops,
+    deliveryAddress
+  );
 
   return (
     <Card>
@@ -84,13 +94,25 @@ export function OrderSummary({
 
         {/* Delivery Information */}
         <div className="space-y-3 pt-4 border-t border-neutral-200">
-          <div className="flex items-center gap-2 text-sm">
-            <Clock className="h-4 w-4 text-neutral-500" />
-            <span className="text-neutral-600">Estimated delivery:</span>
-            <span className="font-medium text-neutral-900">
-              {formatDeliveryTime(estimatedDeliveryTime)}
-            </span>
-          </div>
+          {isLoading ? (
+            <div className="flex items-center gap-2 text-sm text-neutral-500">
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-neutral-300 border-t-neutral-600"></div>
+              <span>Calculating delivery time...</span>
+            </div>
+          ) : estimate ? (
+            <DeliveryTime
+              estimate={estimate}
+              variant="simple"
+              showConfidence={true}
+            />
+          ) : (
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-neutral-600">Estimated delivery:</span>
+              <span className="font-medium text-neutral-900">
+                {estimatedDeliveryTime} min
+              </span>
+            </div>
+          )}
 
           {deliveryAddress && (
             <div className="flex items-start gap-2 text-sm">

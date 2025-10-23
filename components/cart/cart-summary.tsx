@@ -2,21 +2,33 @@
 
 import React from "react";
 import { CartState } from "@/contexts/cart-context";
-import { formatCurrency, formatDeliveryTime } from "@/lib/utils";
-import { Clock, Package } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+import { useCartDeliveryEstimate } from "@/hooks/use-delivery-estimation";
+import { DeliveryTime } from "@/components/ui/delivery-time";
+import { Package } from "lucide-react";
+import { mockShops } from "@/lib/mock-data";
 
 interface CartSummaryProps {
   cartState: CartState;
   showDeliveryEstimate?: boolean;
   className?: string;
+  customerAddress?: any; // Address type from lib/types
 }
 
 export function CartSummary({
   cartState,
   showDeliveryEstimate = true,
   className = "",
+  customerAddress,
 }: CartSummaryProps) {
-  const { totalItems, totalAmount, estimatedDeliveryTime } = cartState;
+  const { totalItems, totalAmount, items } = cartState;
+
+  // Get enhanced delivery estimate
+  const { estimate, isLoading } = useCartDeliveryEstimate(
+    items,
+    mockShops,
+    customerAddress
+  );
 
   if (totalItems === 0) {
     return null;
@@ -40,15 +52,20 @@ export function CartSummary({
         </div>
 
         {/* Delivery Time */}
-        {showDeliveryEstimate && estimatedDeliveryTime > 0 && (
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2 text-neutral-600">
-              <Clock className="h-4 w-4" />
-              <span>Estimated delivery</span>
-            </div>
-            <span className="font-medium text-neutral-900">
-              {formatDeliveryTime(estimatedDeliveryTime)}
-            </span>
+        {showDeliveryEstimate && (
+          <div className="text-sm">
+            {isLoading ? (
+              <div className="flex items-center gap-2 text-neutral-500">
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-neutral-300 border-t-neutral-600"></div>
+                <span>Calculating delivery time...</span>
+              </div>
+            ) : estimate ? (
+              <DeliveryTime
+                estimate={estimate}
+                variant="simple"
+                showConfidence={true}
+              />
+            ) : null}
           </div>
         )}
 

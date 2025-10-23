@@ -6,31 +6,19 @@ import Link from "next/link";
 import { Shop } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Clock, MapPin } from "lucide-react";
+import { SimpleDeliveryTime } from "@/components/ui/delivery-time";
+import { Star, MapPin } from "lucide-react";
 
 interface ShopCardProps {
   shop: Shop;
 }
 
 export function ShopCard({ shop }: ShopCardProps) {
-  const formatDeliveryTime = (minutes: number) => {
-    if (minutes < 60) {
-      return `${minutes}min`;
-    }
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return remainingMinutes > 0
-      ? `${hours}h ${remainingMinutes}min`
-      : `${hours}h`;
-  };
-
   const formatDistance = (distance: number) => {
     return distance < 1
       ? `${Math.round(distance * 1000)}m`
       : `${distance.toFixed(1)}km`;
   };
-
-  console.log({ shop });
 
   return (
     <Link href={`/shops/${shop.id}`} className="group">
@@ -77,10 +65,10 @@ export function ShopCard({ shop }: ShopCardProps) {
                 <span className="text-neutral-500">({shop.reviewCount})</span>
               </div>
 
-              <div className="flex items-center gap-1 text-neutral-600">
-                <Clock className="h-4 w-4" />
-                <span>{formatDeliveryTime(shop.estimatedDeliveryTime)}</span>
-              </div>
+              <SimpleDeliveryTime
+                minutes={shop.estimatedDeliveryTime}
+                className="text-neutral-600"
+              />
 
               <div className="flex items-center gap-1 text-neutral-600">
                 <MapPin className="h-4 w-4" />

@@ -7,7 +7,8 @@ import { Product } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, ShoppingCart } from "lucide-react";
+import { SimpleDeliveryTime } from "@/components/ui/delivery-time";
+import { ShoppingCart } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -72,10 +73,10 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
                 <div className="text-lg font-bold text-neutral-900">
                   ₴{product.price}
                 </div>
-                <div className="flex items-center gap-1 text-xs text-neutral-500">
-                  <Clock className="h-3 w-3" />
-                  {product.estimatedDeliveryTime}min
-                </div>
+                <SimpleDeliveryTime
+                  minutes={product.estimatedDeliveryTime}
+                  className="text-xs text-neutral-500"
+                />
               </div>
 
               {/* Add to Cart Button */}
