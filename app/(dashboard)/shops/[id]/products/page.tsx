@@ -18,6 +18,7 @@ import { ProductSort } from "@/components/product/product-sort";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Package } from "lucide-react";
+import { useCart } from "@/contexts/cart-context";
 
 export default function ShopProductsPage() {
   const params = useParams();
@@ -28,6 +29,8 @@ export default function ShopProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<ProductFilters>({});
   const [sortBy, setSortBy] = useState("relevance");
+
+  const { addItem } = useCart();
 
   // Load shop and products
   useEffect(() => {
@@ -87,10 +90,12 @@ export default function ShopProductsPage() {
   }, [allProducts]);
 
   const handleAddToCart = (product: Product) => {
-    // TODO: Implement cart functionality in later tasks
-    console.log("Adding to cart:", product.name);
-    // For now, just show a simple alert
-    alert(`Added "${product.name}" to cart!`);
+    const success = addItem(product, 1);
+    if (success) {
+      console.log("Added to cart:", product.name);
+    } else {
+      console.log("Failed to add item to cart - validation error");
+    }
   };
 
   if (loading) {

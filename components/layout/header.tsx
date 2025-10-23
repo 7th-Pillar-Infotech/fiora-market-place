@@ -7,14 +7,18 @@ import { clsx } from "clsx";
 import { ShoppingCart, User, Search, Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { useCart } from "@/contexts/cart-context";
+import { CartSidebar } from "@/components/cart";
 
 interface HeaderProps {
-  cartItemCount?: number;
+  // cartItemCount is now managed by the cart context
 }
 
-export function Header({ cartItemCount = 0 }: HeaderProps) {
+export function Header({}: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [isCartOpen, setIsCartOpen] = React.useState(false);
   const pathname = usePathname();
+  const { state } = useCart();
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -72,25 +76,24 @@ export function Header({ cartItemCount = 0 }: HeaderProps) {
             </Button>
 
             {/* Cart */}
-            <Link href="/cart">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative"
-                aria-label={`Shopping cart with ${cartItemCount} items`}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {cartItemCount > 0 && (
-                  <Badge
-                    variant="destructive"
-                    size="sm"
-                    className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                  >
-                    {cartItemCount > 99 ? "99+" : cartItemCount}
-                  </Badge>
-                )}
-              </Button>
-            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              onClick={() => setIsCartOpen(true)}
+              aria-label={`Shopping cart with ${state.totalItems} items`}
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {state.totalItems > 0 && (
+                <Badge
+                  variant="destructive"
+                  size="sm"
+                  className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                >
+                  {state.totalItems > 99 ? "99+" : state.totalItems}
+                </Badge>
+              )}
+            </Button>
 
             {/* Account */}
             <Link href="/account">
@@ -149,6 +152,9 @@ export function Header({ cartItemCount = 0 }: HeaderProps) {
           </div>
         )}
       </div>
+
+      {/* Cart Sidebar */}
+      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   );
 }

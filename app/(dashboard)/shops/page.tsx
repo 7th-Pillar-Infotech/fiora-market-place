@@ -22,7 +22,7 @@ import {
   useBrowsingHistory,
 } from "@/hooks/use-recommendations";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { cartUtils } from "@/lib/utils";
+import { useCart } from "@/contexts/cart-context";
 
 export default function ShopsPage() {
   const [allShops] = useState<Shop[]>(mockShops);
@@ -91,10 +91,15 @@ export default function ShopsPage() {
     setFilters(newFilters);
   };
 
+  const { addItem } = useCart();
+
   const handleAddToCart = (product: any) => {
-    cartUtils.addToCart(product, 1);
-    // You could add a toast notification here
-    console.log("Added to cart:", product.name);
+    const success = addItem(product, 1);
+    if (success) {
+      console.log("Added to cart:", product.name);
+    } else {
+      console.log("Failed to add item to cart - validation error");
+    }
   };
 
   const handleProductView = (

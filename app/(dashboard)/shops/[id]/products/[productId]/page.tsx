@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ShoppingCart, Heart } from "lucide-react";
 import { useProductViewTracking } from "@/hooks/use-recommendations";
-import { cartUtils } from "@/lib/utils";
+import { useCart } from "@/contexts/cart-context";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -22,7 +22,8 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  // View tracking hook
+  // Cart and view tracking hooks
+  const { addItem } = useCart();
   const { startTracking, endTracking } = useProductViewTracking();
 
   useEffect(() => {
@@ -69,10 +70,13 @@ export default function ProductDetailPage() {
     // Simulate adding to cart
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    // Add to cart using utility
-    cartUtils.addToCart(product, quantity);
-    console.log(`Added ${quantity}x ${product.name} to cart`);
-    alert(`Added ${quantity}x "${product.name}" to cart!`);
+    // Add to cart using context
+    const success = addItem(product, quantity);
+    if (success) {
+      console.log(`Added ${quantity}x ${product.name} to cart`);
+    } else {
+      console.log("Failed to add item to cart - validation error");
+    }
 
     setIsAddingToCart(false);
   };
