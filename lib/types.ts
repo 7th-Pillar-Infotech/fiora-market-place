@@ -112,6 +112,7 @@ export interface ProductFilters {
   maxPrice?: number;
   isAvailable?: boolean;
   tags?: string[];
+  maxDeliveryTime?: number;
 }
 
 export interface SearchParams {

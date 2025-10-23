@@ -1,0 +1,105 @@
+"use client";
+
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Product } from "@/lib/types";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Clock, ShoppingCart } from "lucide-react";
+
+interface ProductCardProps {
+  product: Product;
+  onAddToCart?: (product: Product) => void;
+}
+
+export function ProductCard({ product, onAddToCart }: ProductCardProps) {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onAddToCart?.(product);
+  };
+
+  return (
+    <Link href={`/shops/${product.shopId}/products/${product.id}`}>
+      <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
+        <CardContent className="p-0">
+          {/* Product Image */}
+          <div className="relative aspect-square overflow-hidden rounded-t-lg">
+            <Image
+              src={product.imageUrls[0]}
+              alt={product.name}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-200"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            />
+
+            {/* Availability Badge */}
+            {!product.isAvailable && (
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                <Badge
+                  variant="secondary"
+                  className="bg-white text-neutral-900"
+                >
+                  Out of Stock
+                </Badge>
+              </div>
+            )}
+
+            {/* Category Badge */}
+            <div className="absolute top-3 left-3">
+              <Badge variant="secondary" className="capitalize">
+                {product.category}
+              </Badge>
+            </div>
+          </div>
+
+          {/* Product Info */}
+          <div className="p-4 space-y-3">
+            <div>
+              <h3 className="font-semibold text-neutral-900 line-clamp-2 group-hover:text-rose-600 transition-colors">
+                {product.name}
+              </h3>
+              <p className="text-sm text-neutral-600 line-clamp-2 mt-1">
+                {product.description}
+              </p>
+            </div>
+
+            {/* Price and Delivery */}
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="text-lg font-bold text-neutral-900">
+                  ₴{product.price}
+                </div>
+                <div className="flex items-center gap-1 text-xs text-neutral-500">
+                  <Clock className="h-3 w-3" />
+                  {product.estimatedDeliveryTime}min
+                </div>
+              </div>
+
+              {/* Add to Cart Button */}
+              {product.isAvailable && (
+                <Button
+                  size="sm"
+                  onClick={handleAddToCart}
+                  className="flex items-center gap-1"
+                >
+                  <ShoppingCart className="h-3 w-3" />
+                  Add
+                </Button>
+              )}
+            </div>
+
+            {/* Stock Info */}
+            {product.isAvailable && product.stock <= 5 && (
+              <div className="text-xs text-amber-600">
+                Only {product.stock} left in stock
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+}

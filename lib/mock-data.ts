@@ -646,6 +646,11 @@ export function filterProducts(
       product.isAvailable !== filters.isAvailable
     )
       return false;
+    if (
+      filters.maxDeliveryTime &&
+      product.estimatedDeliveryTime > filters.maxDeliveryTime
+    )
+      return false;
     if (filters.tags && filters.tags.length > 0) {
       const hasMatchingTag = filters.tags.some((tag) =>
         product.tags.includes(tag)
