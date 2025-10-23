@@ -46,15 +46,15 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
       <div
         className={`fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        } md:max-w-md max-w-full`}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-neutral-200">
-            <h2 className="text-lg font-semibold text-neutral-900">
+          <div className="flex items-center justify-between p-4 md:p-4 p-3 border-b border-neutral-200 bg-white sticky top-0 z-10">
+            <h2 className="text-lg md:text-lg text-base font-semibold text-neutral-900">
               Shopping Cart
               {totalItems > 0 && (
-                <span className="ml-2 text-sm text-neutral-500">
+                <span className="ml-2 text-sm text-neutral-500 hidden sm:inline">
                   ({totalItems} {totalItems === 1 ? "item" : "items"})
                 </span>
               )}
@@ -63,7 +63,7 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-8 w-8"
+              className="h-10 w-10 tap-target"
               aria-label="Close cart"
             >
               <X className="h-5 w-5" />
@@ -91,7 +91,7 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
             ) : (
               /* Cart Items */
               <div className="flex flex-col h-full">
-                <div className="flex-1 overflow-y-auto p-4">
+                <div className="flex-1 overflow-y-auto p-4 md:p-4 p-3 scroll-smooth">
                   <div className="space-y-0">
                     {items.map((item) => (
                       <CartItem
@@ -106,7 +106,7 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                 </div>
 
                 {/* Summary and Actions */}
-                <div className="border-t border-neutral-200 p-4 space-y-4">
+                <div className="border-t border-neutral-200 p-4 md:p-4 p-3 space-y-4 bg-white">
                   {/* Validation Errors */}
                   <CartErrors
                     errors={validation.errors}
@@ -117,10 +117,10 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
 
                   <CartSummary cartState={state} />
 
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <Link href="/checkout" onClick={onClose}>
                       <Button
-                        className="w-full"
+                        className="w-full tap-target"
                         size="lg"
                         disabled={!isReadyForCheckout()}
                       >
@@ -130,7 +130,7 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
 
                     <div className="flex gap-2">
                       <Link href="/cart" onClick={onClose} className="flex-1">
-                        <Button variant="outline" className="w-full">
+                        <Button variant="outline" className="w-full tap-target">
                           View Cart
                         </Button>
                       </Link>
@@ -138,7 +138,7 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                       <Button
                         variant="ghost"
                         onClick={clearCart}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 tap-target px-3"
                       >
                         Clear All
                       </Button>

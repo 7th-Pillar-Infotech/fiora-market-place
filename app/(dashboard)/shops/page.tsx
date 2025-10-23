@@ -117,20 +117,20 @@ export default function ShopsPage() {
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 md:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-neutral-900 mb-2">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">
             Flower Shops in Kyiv
           </h1>
-          <p className="text-neutral-600">
+          <p className="text-sm md:text-base text-neutral-600">
             Discover beautiful flowers from local shops near you
           </p>
         </div>
 
         {/* Recommendations Section */}
-        <div className="mb-8 space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="mb-6 md:mb-8 space-y-4 md:space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
             <div className="lg:col-span-3">
               <RecommendationsSection
                 recommendations={recommendations}
@@ -155,16 +155,16 @@ export default function ShopsPage() {
         </div>
 
         {/* Search and Filters */}
-        <div className="mb-6 space-y-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
+        <div className="mb-4 md:mb-6 space-y-3 md:space-y-4">
+          <div className="flex flex-col gap-3 md:gap-4">
+            <div className="w-full">
               <ShopSearch
                 value={searchQuery}
                 onChange={handleSearchChange}
-                placeholder="Search shops by name, category, or description..."
+                placeholder="Search shops..."
               />
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3 overflow-x-auto pb-2">
               <ShopFiltersComponent
                 filters={filters}
                 onFiltersChange={handleFiltersChange}
@@ -175,8 +175,8 @@ export default function ShopsPage() {
         </div>
 
         {/* Results Summary */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="text-sm text-neutral-600">
+        <div className="flex items-center justify-between mb-4 md:mb-6">
+          <div className="text-xs md:text-sm text-neutral-600">
             {loading ? (
               "Loading shops..."
             ) : (
@@ -184,7 +184,7 @@ export default function ShopsPage() {
                 {processedShops.length} shop
                 {processedShops.length !== 1 ? "s" : ""} found
                 {(debouncedSearchQuery || Object.keys(filters).length > 0) && (
-                  <span className="ml-1">
+                  <span className="ml-1 hidden sm:inline">
                     {debouncedSearchQuery && ` for "${debouncedSearchQuery}"`}
                     {Object.keys(filters).length > 0 && " with filters applied"}
                   </span>

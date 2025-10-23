@@ -121,17 +121,18 @@ export function Header({}: HeaderProps) {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-neutral-200 py-4">
-            <nav className="flex flex-col space-y-4">
+          <div className="md:hidden border-t border-neutral-200 py-4 animate-slide-down">
+            <nav className="flex flex-col space-y-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
                   className={clsx(
-                    "text-base font-medium transition-colors hover:text-primary-600",
+                    "text-base font-medium transition-colors py-3 px-2 rounded-lg tap-target",
+                    "active:bg-neutral-100 active:scale-95",
                     isActive(item.href)
-                      ? "text-primary-600"
-                      : "text-neutral-600"
+                      ? "text-primary-600 bg-primary-50"
+                      : "text-neutral-600 hover:text-primary-600 hover:bg-neutral-50"
                   )}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -141,7 +142,7 @@ export function Header({}: HeaderProps) {
               <div className="pt-4 border-t border-neutral-200">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start"
+                  className="w-full justify-start h-12 tap-target"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <Search className="h-5 w-5 mr-2" />

@@ -109,11 +109,7 @@ const config: Config = {
         "5xl": ["3rem", { lineHeight: "1" }],
         "6xl": ["3.75rem", { lineHeight: "1" }],
       },
-      spacing: {
-        "18": "4.5rem",
-        "88": "22rem",
-        "128": "32rem",
-      },
+
       borderRadius: {
         xl: "0.75rem",
         "2xl": "1rem",
@@ -157,6 +153,17 @@ const config: Config = {
       },
       screens: {
         xs: "475px",
+        "2xs": "375px",
+        "3xs": "320px",
+      },
+      spacing: {
+        "18": "4.5rem",
+        "88": "22rem",
+        "128": "32rem",
+        "safe-top": "env(safe-area-inset-top)",
+        "safe-bottom": "env(safe-area-inset-bottom)",
+        "safe-left": "env(safe-area-inset-left)",
+        "safe-right": "env(safe-area-inset-right)",
       },
     },
   },

@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ProductRecommendation } from "@/lib/recommendations";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Clock, ShoppingCart, Star, Sparkles } from "lucide-react";
 import { formatCurrency, formatDeliveryTime } from "@/lib/utils";
 
@@ -58,8 +58,9 @@ export function RecommendationCard({
     <Link
       href={`/shops/${product.shopId}/products/${product.id}`}
       onClick={handleView}
+      className="tap-target"
     >
-      <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
+      <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer h-full active:scale-95 md:active:scale-100">
         <CardContent className="p-0">
           {/* Product Image */}
           <div
@@ -67,16 +68,18 @@ export function RecommendationCard({
               compact ? "aspect-[4/3]" : "aspect-square"
             }`}
           >
-            <Image
+            <OptimizedImage
               src={product.imageUrls[0]}
               alt={product.name}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-200"
+              className="group-hover:scale-105 transition-transform duration-200"
               sizes={
                 compact
                   ? "(max-width: 640px) 50vw, 25vw"
                   : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               }
+              aspectRatio={compact ? "landscape" : "square"}
+              priority={false}
             />
 
             {/* Availability Badge */}
@@ -84,7 +87,7 @@ export function RecommendationCard({
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                 <Badge
                   variant="secondary"
-                  className="bg-white text-neutral-900"
+                  className="bg-white text-neutral-900 text-xs"
                 >
                   Out of Stock
                 </Badge>
@@ -92,28 +95,30 @@ export function RecommendationCard({
             )}
 
             {/* Recommendation Reason Badge */}
-            <div className="absolute top-2 left-2">
+            <div className="absolute top-1 md:top-2 left-1 md:left-2">
               <Badge
                 variant="outline"
                 className={`${reasonColors[reason]} border text-xs flex items-center gap-1`}
               >
-                <ReasonIcon className="h-3 w-3" />
-                {reason === "browsing_history"
-                  ? "For You"
-                  : reason === "popular"
-                  ? "Popular"
-                  : reason === "seasonal"
-                  ? "Seasonal"
-                  : reason === "category_match"
-                  ? "Similar"
-                  : reason === "shop_favorite"
-                  ? "Favorite Shop"
-                  : "Recommended"}
+                <ReasonIcon className="h-2 md:h-3 w-2 md:w-3" />
+                <span className="hidden sm:inline">
+                  {reason === "browsing_history"
+                    ? "For You"
+                    : reason === "popular"
+                    ? "Popular"
+                    : reason === "seasonal"
+                    ? "Seasonal"
+                    : reason === "category_match"
+                    ? "Similar"
+                    : reason === "shop_favorite"
+                    ? "Favorite Shop"
+                    : "Recommended"}
+                </span>
               </Badge>
             </div>
 
             {/* Category Badge */}
-            <div className="absolute top-2 right-2">
+            <div className="absolute top-1 md:top-2 right-1 md:right-2">
               <Badge variant="secondary" className="capitalize text-xs">
                 {product.category}
               </Badge>
@@ -172,10 +177,13 @@ export function RecommendationCard({
                 <Button
                   size={compact ? "sm" : "default"}
                   onClick={handleAddToCart}
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-1 tap-target"
                 >
                   <ShoppingCart className="h-3 w-3" />
-                  {compact ? "Add" : "Add to Cart"}
+                  <span className="hidden sm:inline">
+                    {compact ? "Add" : "Add to Cart"}
+                  </span>
+                  <span className="sm:hidden">+</span>
                 </Button>
               )}
             </div>

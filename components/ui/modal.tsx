@@ -62,15 +62,15 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     if (!isOpen) return null;
 
     const sizeClasses = {
-      sm: "max-w-md",
-      md: "max-w-lg",
-      lg: "max-w-2xl",
-      xl: "max-w-4xl",
+      sm: "max-w-md md:max-w-md max-w-[calc(100vw-1rem)]",
+      md: "max-w-lg md:max-w-lg max-w-[calc(100vw-1rem)]",
+      lg: "max-w-2xl md:max-w-2xl max-w-[calc(100vw-1rem)]",
+      xl: "max-w-4xl md:max-w-4xl max-w-[calc(100vw-1rem)]",
     };
 
     return (
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-4 p-2"
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? "modal-title" : undefined}
@@ -87,6 +87,8 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
           ref={modalRef}
           className={clsx(
             "relative w-full rounded-xl bg-white shadow-strong animate-scale-in",
+            "max-h-[90vh] md:max-h-[80vh] overflow-hidden",
+            "md:rounded-xl rounded-lg",
             sizeClasses[size],
             className
           )}
@@ -125,7 +127,13 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
           )}
 
           {/* Content */}
-          <div className={clsx("px-6", title || description ? "pb-6" : "py-6")}>
+          <div
+            className={clsx(
+              "px-4 md:px-6 overflow-y-auto",
+              title || description ? "pb-4 md:pb-6" : "py-4 md:py-6",
+              "max-h-[calc(90vh-8rem)] md:max-h-[calc(80vh-8rem)]"
+            )}
+          >
             {children}
           </div>
         </div>

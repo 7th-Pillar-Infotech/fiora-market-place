@@ -3,26 +3,29 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { clsx } from "clsx";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 tap-target touch-manipulation",
   {
     variants: {
       variant: {
         default:
-          "bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700",
+          "bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700 active:scale-95",
         destructive:
-          "bg-error-500 text-white hover:bg-error-600 active:bg-error-700",
+          "bg-error-500 text-white hover:bg-error-600 active:bg-error-700 active:scale-95",
         outline:
-          "border border-neutral-300 bg-white hover:bg-neutral-50 active:bg-neutral-100 text-neutral-900",
+          "border border-neutral-300 bg-white hover:bg-neutral-50 active:bg-neutral-100 active:scale-95 text-neutral-900",
         secondary:
-          "bg-secondary-500 text-white hover:bg-secondary-600 active:bg-secondary-700",
-        ghost: "hover:bg-neutral-100 active:bg-neutral-200 text-neutral-900",
-        link: "text-primary-500 underline-offset-4 hover:underline",
+          "bg-secondary-500 text-white hover:bg-secondary-600 active:bg-secondary-700 active:scale-95",
+        ghost:
+          "hover:bg-neutral-100 active:bg-neutral-200 active:scale-95 text-neutral-900",
+        link: "text-primary-500 underline-offset-4 hover:underline active:scale-95",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-12 rounded-lg px-8",
-        icon: "h-10 w-10",
+        default: "h-10 px-4 py-2 min-h-[44px] min-w-[44px]",
+        sm: "h-8 rounded-md px-3 text-xs min-h-[36px] min-w-[36px]",
+        lg: "h-12 rounded-lg px-8 min-h-[48px]",
+        icon: "h-10 w-10 min-h-[44px] min-w-[44px]",
+        "icon-sm": "h-8 w-8 min-h-[36px] min-w-[36px]",
+        "icon-lg": "h-12 w-12 min-h-[48px] min-w-[48px]",
       },
     },
     defaultVariants: {
