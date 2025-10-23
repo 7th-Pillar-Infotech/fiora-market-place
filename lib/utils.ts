@@ -453,4 +453,200 @@ export const searchUtils = {
       return true;
     });
   },
+
+  /**
+   * Sort shops by various criteria
+   */
+  sortShops(shops: Shop[], sortBy: string): Shop[] {
+    const sorted = [...shops];
+
+    switch (sortBy) {
+      case "rating":
+        return sorted.sort((a, b) => b.rating - a.rating);
+      case "delivery_time":
+        return sorted.sort(
+          (a, b) => a.estimatedDeliveryTime - b.estimatedDeliveryTime
+        );
+      case "distance":
+        return sorted.sort((a, b) => a.distance - b.distance);
+      case "reviews":
+        return sorted.sort((a, b) => b.reviewCount - a.reviewCount);
+      case "name":
+        return sorted.sort((a, b) => a.name.localeCompare(b.name));
+      default:
+        return sorted;
+    }
+  },
+
+  /**
+   * Sort products by various criteria
+   */
+  sortProducts(products: Product[], sortBy: string): Product[] {
+    const sorted = [...products];
+
+    switch (sortBy) {
+      case "price_asc":
+        return sorted.sort((a, b) => a.price - b.price);
+      case "price_desc":
+        return sorted.sort((a, b) => b.price - a.price);
+      case "delivery_time":
+        return sorted.sort(
+          (a, b) => a.estimatedDeliveryTime - b.estimatedDeliveryTime
+        );
+      case "name":
+        return sorted.sort((a, b) => a.name.localeCompare(b.name));
+      case "availability":
+        return sorted.sort(
+          (a, b) => (b.isAvailable ? 1 : 0) - (a.isAvailable ? 1 : 0)
+        );
+      default:
+        return sorted;
+    }
+  },
+};
+
+/**
+ * Mock API simulation utilities with loading states
+ */
+export interface ApiResponse<T> {
+  data: T;
+  loading: boolean;
+  error: string | null;
+}
+
+export const apiUtils = {
+  /**
+   * Simulate API call with loading states and potential errors
+   */
+  simulateApiCall<T>(
+    data: T,
+    delay: number = 800,
+    errorRate: number = 0.05
+  ): Promise<T> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (Math.random() < errorRate) {
+          reject(new Error("Network error: Failed to fetch data"));
+        } else {
+          resolve(data);
+        }
+      }, delay + Math.random() * 400); // Add some randomness to delay
+    });
+  },
+
+  /**
+   * Create loading state for API calls
+   */
+  createLoadingState<T>(initialData: T): ApiResponse<T> {
+    return {
+      data: initialData,
+      loading: true,
+      error: null,
+    };
+  },
+
+  /**
+   * Create success state for API calls
+   */
+  createSuccessState<T>(data: T): ApiResponse<T> {
+    return {
+      data,
+      loading: false,
+      error: null,
+    };
+  },
+
+  /**
+   * Create error state for API calls
+   */
+  createErrorState<T>(error: string, fallbackData: T): ApiResponse<T> {
+    return {
+      data: fallbackData,
+      loading: false,
+      error,
+    };
+  },
+};
+
+/**
+ * User preferences management utilities
+ */
+export interface UserPreferences {
+  notifications: boolean;
+  emailUpdates: boolean;
+  smsUpdates: boolean;
+  theme: "light" | "dark" | "system";
+  language: string;
+  currency: string;
+  defaultAddress?: string;
+  favoriteShops: string[];
+  recentSearches: string[];
+  maxDeliveryTime?: number;
+  priceRange?: { min: number; max: number };
+}
+
+export const preferencesUtils = {
+  /**
+   * Get user preferences with defaults
+   */
+  getPreferences(): UserPreferences {
+    return storage.get<UserPreferences>(STORAGE_KEYS.PREFERENCES, {
+      notifications: true,
+      emailUpdates: true,
+      smsUpdates: false,
+      theme: "system",
+      language: "uk",
+      currency: "UAH",
+      favoriteShops: [],
+      recentSearches: [],
+    });
+  },
+
+  /**
+   * Save user preferences
+   */
+  savePreferences(preferences: Partial<UserPreferences>): void {
+    const current = this.getPreferences();
+    const updated = { ...current, ...preferences };
+    storage.set(STORAGE_KEYS.PREFERENCES, updated);
+  },
+
+  /**
+   * Add shop to favorites
+   */
+  addFavoriteShop(shopId: string): void {
+    const prefs = this.getPreferences();
+    if (!prefs.favoriteShops.includes(shopId)) {
+      prefs.favoriteShops.push(shopId);
+      this.savePreferences(prefs);
+    }
+  },
+
+  /**
+   * Remove shop from favorites
+   */
+  removeFavoriteShop(shopId: string): void {
+    const prefs = this.getPreferences();
+    prefs.favoriteShops = prefs.favoriteShops.filter((id) => id !== shopId);
+    this.savePreferences(prefs);
+  },
+
+  /**
+   * Add search term to recent searches
+   */
+  addRecentSearch(query: string): void {
+    const prefs = this.getPreferences();
+    const filtered = prefs.recentSearches.filter((q) => q !== query);
+    prefs.recentSearches = [query, ...filtered].slice(0, 10); // Keep last 10 searches
+    this.savePreferences(prefs);
+  },
+
+  /**
+   * Clear recent searches
+   */
+  clearRecentSearches(): void {
+    const prefs = this.getPreferences();
+    prefs.recentSearches = [];
+    this.savePreferences(prefs);
+  },
 };
