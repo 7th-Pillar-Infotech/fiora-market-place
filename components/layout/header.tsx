@@ -11,10 +11,10 @@ import { useCart } from "@/contexts/cart-context";
 import { CartSidebar } from "@/components/cart";
 
 interface HeaderProps {
-  // cartItemCount is now managed by the cart context
+  className?: string;
 }
 
-export function Header({}: HeaderProps) {
+export function Header({ className }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [isCartOpen, setIsCartOpen] = React.useState(false);
   const pathname = usePathname();
@@ -24,6 +24,7 @@ export function Header({}: HeaderProps) {
     { name: "Home", href: "/" },
     { name: "Shops", href: "/shops" },
     { name: "Orders", href: "/orders" },
+    { name: "Test Flows", href: "/test-flows" },
   ];
 
   const isActive = (href: string) => {

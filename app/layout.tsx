@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/contexts";
 import { PWAProvider } from "@/components/pwa";
+import { ErrorBoundary } from "@/components/error/error-boundary";
+import { GlobalErrorHandler } from "@/components/error/global-error-handler";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -68,9 +70,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased touch-manipulation`}
       >
-        <CartProvider>
-          <PWAProvider>{children}</PWAProvider>
-        </CartProvider>
+        <ErrorBoundary>
+          <GlobalErrorHandler>
+            <CartProvider>
+              <PWAProvider>{children}</PWAProvider>
+            </CartProvider>
+          </GlobalErrorHandler>
+        </ErrorBoundary>
       </body>
     </html>
   );
