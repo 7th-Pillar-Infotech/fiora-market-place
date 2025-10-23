@@ -219,9 +219,7 @@ export function generateMockShops(count: number = 20): Shop[] {
       estimatedDeliveryTime:
         Math.floor(distance * 8) + Math.floor(Math.random() * 25) + 20, // 20-80 minutes
       distance: Math.round(distance * 10) / 10,
-      imageUrl: `/api/placeholder/400/300?shop=${
-        i + 1
-      }&name=${encodeURIComponent(shopName)}`,
+      imageUrl: `https://picsum.photos/400/300?random=${i + 1}`,
       isOpen: Math.random() > 0.15, // 85% chance of being open
       categories: CATEGORIES.slice(0, Math.floor(Math.random() * 4) + 2), // 2-5 categories
       address,
@@ -353,15 +351,9 @@ export function generateMockProducts(
         )} perfect for ${occasion} occasions. Expertly crafted with fresh, premium flowers by our skilled florists. Includes care instructions and complimentary message card.`,
         price: finalPrice,
         imageUrls: [
-          `/api/placeholder/400/400?product=${shop.id}-${
-            i + 1
-          }-1&category=${category}`,
-          `/api/placeholder/400/400?product=${shop.id}-${
-            i + 1
-          }-2&category=${category}`,
-          `/api/placeholder/400/400?product=${shop.id}-${
-            i + 1
-          }-3&category=${category}`,
+          `https://picsum.photos/400/400?random=${shop.id}-${i + 1}-1`,
+          `https://picsum.photos/400/400?random=${shop.id}-${i + 1}-2`,
+          `https://picsum.photos/400/400?random=${shop.id}-${i + 1}-3`,
         ],
         category,
         isAvailable: Math.random() > 0.15, // 85% availability
